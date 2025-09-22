@@ -582,7 +582,7 @@ body{
 
 
 
-@media(max-width = 376px){
+@media(max-width: 376px){
 
     .background img {
         position: fixed;
