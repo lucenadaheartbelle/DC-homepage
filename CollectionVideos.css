@@ -1,0 +1,226 @@
+body {
+    background-color: red;
+    height: 100vh;
+    width: 100%;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+}
+
+#compilation-videos {
+    background-color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 90%;
+    height: 90vh;
+    overflow: hidden;
+}
+
+.slide {
+    display: none;
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+}
+
+.slide.active {
+    display: flex;
+}
+
+/* Container styles for all years */
+.container-2006, .container-2007, .container-2008, .container-2009, 
+.container-2010, .container-2011, .container-2012, .container-2013, 
+.container-2014, .container-2015, .container-2016, .container-2017, 
+.container-2018, .container-2019, .container-2020, .container-2021, 
+.container-2022, .container-2023, .container-2024, .container-2025 {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 20px;
+    box-sizing: border-box;
+    overflow-y: auto;
+}
+
+/* Year titles */
+.container-2006 h1, .container-2007 h1, .container-2008 h1, .container-2009 h1, 
+.container-2010 h1, .container-2011 h1, .container-2012 h1, .container-2013 h1, 
+.container-2014 h1, .container-2015 h1, .container-2016 h1, .container-2017 h1, 
+.container-2018 h1, .container-2019 h1, .container-2020 h1, .container-2021 h1, 
+.container-2022 h1, .container-2023 h1, .container-2024 h1, .container-2025 h1{
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 2.5em;
+    color: #333;
+}
+
+/* Image grid for 2006 (using ul) */
+.video2006, .video2007, .video2008, .video2009, .video2010,
+.video2011, .video2012, .video2013, .video2014, .video2015, 
+.video2016, .video2017, .video2018, .video2019, .video2020,
+.video2021, .video2022, .video2023, .video2024, .video2025 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    width: 100%;
+    max-width: 1200px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    justify-items: center;
+}
+
+.video2006 li, .video2007 li, .video2008 li, .video2009 li, .video2010 li,
+.video2011 li, .video2012 li, .video2013 li, .video2014 li, .video2015 li, 
+.video2016 li, .video2017 li, .video2018 li, .video2019 li, .video2020 li,
+.video2021 li, .video2022 li, .video2023 li, .video2024 li, .video2025 li{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Individual image styling */
+.video {
+    display: block;
+    height: 250px;
+    width: 280px;
+    overflow: hidden;
+    border: 10px solid #fff;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.video:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+}
+
+.video video {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.video:hover video {
+    transform: scale(1.1);
+}
+
+/* Navigation buttons */
+#button-container {
+    position: fixed;
+    z-index: 1000;
+    top: 50%;
+    left: 0;
+    right: 0;
+    pointer-events: none;
+}
+
+#button {
+    position: relative;
+    width: 100%;
+}
+
+#button > button {
+    background-color: rgba(255, 255, 255, 0.8);
+    border: none;
+    cursor: pointer;
+    padding: 15px 20px;
+    border-radius: 50%;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+    pointer-events: all;
+}
+
+#button > button:hover {
+    background-color: rgba(255, 255, 255, 1);
+    transform: scale(1.1);
+}
+
+#button > button > .fa {
+    font-size: 24px;
+    color: #333;
+}
+
+#button > .left {
+    position: absolute;
+    left: 20px;
+    transform: translateY(-50%);
+}
+
+#button > .right {
+    position: absolute;
+    right: 20px;
+    transform: translateY(-50%);
+}
+
+/* Full screen image viewer */
+#fullVideoContainer {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    cursor: pointer;
+}
+
+#fullVideoContainer video {
+    max-width: 90%;
+    max-height: 90%;
+    object-fit: contain;
+    border-radius: 10px;
+    box-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
+}
+
+/* Responsive design */
+@media screen and (max-width: 768px) {
+    .video {
+        width: 240px;
+        height: 200px;
+    }
+    
+    .video2006, .video2007, .video2008, .video2009, .video2010,
+    .video2011, .video2012, .video2013, .video2014, .video2015, 
+    .video2016, .video2017, .video2018, .video2019, .video2020,
+    .video2021, .video2022, .video2023, .video2024, .video2025 {
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 15px;
+    }
+    
+    #button > .left {
+        left: 10px;
+    }
+    
+    #button > .right {
+        right: 10px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .image {
+        width: 200px;
+        height: 180px;
+    }
+    
+    .video2006, .video2007, .video2008, .video2009, .video2010,
+    .video2011, .video2012, .video2013, .video2014, .video2015, 
+    .video2016, .video2017, .video2018, .video2019, .video2020,
+    .video2021, .video2022, .video2023, .video2024, .video2025 {
+        grid-template-columns: 1fr;
+        gap: 15px;
+        padding: 10px;
+    }
+}
