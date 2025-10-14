@@ -202,7 +202,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const iframe = document.getElementById('Iframe');
     
     // Get all photo elements that should trigger the popup
-    const photoElements = document.querySelectorAll('.compilation-photos li, .compilation-photos-2 li, .compilation-photos-3 li, .compilation-photos-4 li,.compilation-videos li, .compilation-videos-2 li, .compilation-videos-3 li, .compilation-videos-4 li, .compilation-videos-5 li');
+    const photoElements = document.querySelectorAll('.compilation-photos li, .compilation-photos-2 li, .compilation-photos-3 li, .compilation-photos-4 li');
     
     // Function to extract year from element class name
     function getYearFromElement(element) {
@@ -507,4 +507,5 @@ function injectCSS() {
 }
 
 // Inject CSS when DOM is loaded
+
 document.addEventListener('DOMContentLoaded', injectCSS);
