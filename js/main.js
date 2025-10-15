@@ -194,278 +194,77 @@ if (document.readyState === 'loading') {
 
 // Wait for DOM to be fully loaded
 document.addEventListener('DOMContentLoaded', function() {
-    
-    // Get popup elements
     const popupContainer = document.getElementById('pop-up-container');
-    const popup = document.getElementById('pop-up');
     const closeButton = document.querySelector('.close-button i');
     const iframe = document.getElementById('Iframe');
-    
-    // Get all photo elements that should trigger the popup
-    const photoElements = document.querySelectorAll('.compilation-photos li, .compilation-photos-2 li, .compilation-photos-3 li, .compilation-photos-4 li');
-    
-    // Function to extract year from element class name
+
+    // Select all clickable elements (photos + videos)
+    const allElements = document.querySelectorAll(
+        '.compilation-photos li, .compilation-photos-2 li, .compilation-photos-3 li, .compilation-photos-4 li, ' +
+        '.compilation-videos li, .compilation-videos-2 li, .compilation-videos-3 li, .compilation-videos-4 li, .compilation-videos-5 li'
+    );
+
+    // Extract the year from the class name
     function getYearFromElement(element) {
-        const classList = element.classList;
-        for (let className of classList) {
+        for (let className of element.classList) {
             const yearMatch = className.match(/(\d{4})/);
-            if (yearMatch) {
-                return yearMatch[1];
-            }
+            if (yearMatch) return yearMatch[1];
         }
         return null;
     }
-    
-    // Function to show popup with specific year
-    function showPopup(year = null) {
+
+    // Show popup depending on photo or video
+    function showPopup(element, year) {
         popupContainer.style.display = 'flex';
         popupContainer.style.justifyContent = 'center';
         popupContainer.style.alignItems = 'center';
+        popupContainer.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
         popupContainer.style.position = 'fixed';
         popupContainer.style.top = '0';
         popupContainer.style.left = '0';
         popupContainer.style.width = '100%';
         popupContainer.style.height = '100%';
-        popupContainer.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
         popupContainer.style.zIndex = '9999';
-            
-        // Set iframe source with year-specific hash if provided
-        let iframeSrc = 'CollectionPhotos.html';
-        if (year) {
-            iframeSrc += `#${year}-collection`;
+
+        // Determine whether it's a photo or video
+        let iframeSrc = '';
+        if (element.closest('.compilation-photos') || element.closest('.compilation-photos-2') || 
+            element.closest('.compilation-photos-3') || element.closest('.compilation-photos-4')) {
+            iframeSrc = `CollectionPhotos.html#${year}-collection`;
+        } else {
+            iframeSrc = `CollectionVideos.html#performances-${year}`;
         }
+
         iframe.src = iframeSrc;
-        
-        // Disable body scrolling
         document.body.style.overflow = 'hidden';
     }
-    
-    
-    // Function to hide popup
+
+    // Hide popup
     function hidePopup() {
         popupContainer.style.display = 'none';
-        iframe.src = ''; // Clear iframe source to stop any loading
-        
-        // Re-enable body scrolling
+        iframe.src = '';
         document.body.style.overflow = 'auto';
     }
-    
-    // Add click event listeners to all photo/video elements
-    photoElements.forEach(function(element) {
+
+    // Add click listener
+    allElements.forEach(function(element) {
         element.addEventListener('click', function(e) {
             e.preventDefault();
-            
-            // Get the year from the clicked element
             const year = getYearFromElement(element);
-            console.log('Clicked year:', year); // Debug log
-            
-            // Show popup with specific year
-            showPopup(year);
-        });
-        
-        // Add hover effect for better UX
-        element.style.cursor = 'pointer';
-        element.addEventListener('mouseenter', function() {
-            this.style.opacity = '0.8';
-            this.style.transform = 'scale(1.02)';
-            this.style.transition = 'all 0.3s ease';
-        });
-        
-        element.addEventListener('mouseleave', function() {
-            this.style.opacity = '1';
-            this.style.transform = 'scale(1)';
+            console.log('Clicked year:', year);
+            showPopup(element, year);
         });
     });
-    
-    // Close popup when close button is clicked
-    closeButton.addEventListener('click', function(e) {
-        e.stopPropagation();
-        hidePopup();
-    });
-    
-    // Close popup when clicking outside the popup content
-    popupContainer.addEventListener('click', function(e) {
-        if (e.target === popupContainer) {
-            hidePopup();
-        }
-    });
-    
-    // Close popup with Escape key
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape' && popupContainer.style.display === 'flex') {
-            hidePopup();
-        }
-    });
-    
-    // Initially hide the popup
+
+    // Close handlers
+    closeButton.addEventListener('click', hidePopup);
+    popupContainer.addEventListener('click', e => { if (e.target === popupContainer) hidePopup(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') hidePopup(); });
+
     hidePopup();
-    
-    // Wait for iframe to load and then scroll to the correct section
-    iframe.addEventListener('load', function() {
-        // Send message to iframe to navigate to specific section if needed
-        const currentSrc = iframe.src;
-        const hashIndex = currentSrc.indexOf('#');
-        if (hashIndex !== -1) {
-            const targetId = currentSrc.substring(hashIndex + 1);
-            
-            // Try to communicate with iframe to scroll to target
-            try {
-                iframe.contentWindow.postMessage({
-                    action: 'scrollToSection',
-                    targetId: targetId
-                }, '*');
-            } catch (error) {
-                console.log('Cross-origin iframe communication not available');
-            }
-        }
-    });
-    
-    // Listen for messages from the iframe
-    window.addEventListener('message', function(event) {
-        // Handle messages from iframe
-        if (event.data === 'closePopup') {
-            hidePopup();
-        }
-    });
 });
 
 
-//vid
-
-document.addEventListener('DOMContentLoaded', function() {
-    
-    // Get popup elements
-    const popupContainer = document.getElementById('pop-up-container');
-    const popup = document.getElementById('pop-up');
-    const closeButton = document.querySelector('.close-button i');
-    const iframe = document.getElementById('Iframe');
-    
-    // Get all photo elements that should trigger the popup
-    const videoElements = document.querySelectorAll('.compilation-videos li, .compilation-videos-2 li, .compilation-videos-3 li, .compilation-videos-4 li, .compilation-videos-5 li');
-    
-    // Function to extract year from element class name
-    function getYearFromElement(element) {
-        const classList = element.classList;
-        for (let className of classList) {
-            const yearMatch = className.match(/(\d{4})/);
-            if (yearMatch) {
-                return yearMatch[1];
-            }
-        }
-        return null;
-    }
-    
-    // Function to show popup with specific year
-    function showPopup(year = null) {
-        popupContainer.style.display = 'flex';
-        popupContainer.style.justifyContent = 'center';
-        popupContainer.style.alignItems = 'center';
-        popupContainer.style.position = 'fixed';
-        popupContainer.style.top = '0';
-        popupContainer.style.left = '0';
-        popupContainer.style.width = '100%';
-        popupContainer.style.height = '100%';
-        popupContainer.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
-        popupContainer.style.zIndex = '9999';
-            
-        // Set iframe source with year-specific hash if provided
-        let iframeSrc = 'CollectionVideos.html';
-        if (year) {
-            iframeSrc += `#performances-${year}`;
-        }
-        iframe.src = iframeSrc;
-        
-        // Disable body scrolling
-        document.body.style.overflow = 'hidden';
-    }
-    
-    // Function to hide popup
-    function hidePopup() {
-        popupContainer.style.display = 'none';
-        iframe.src = ''; // Clear iframe source to stop any loading
-        
-        // Re-enable body scrolling
-        document.body.style.overflow = 'auto';
-    }
-    
-    // Add click event listeners to all photo/video elements
-    videoElements.forEach(function(element) {
-        element.addEventListener('click', function(e) {
-            e.preventDefault();
-            
-            // Get the year from the clicked element
-            const year = getYearFromElement(element);
-            console.log('Clicked year:', year); // Debug log
-            
-            // Show popup with specific year
-            showPopup(year);
-        });
-        
-        // Add hover effect for better UX
-        element.style.cursor = 'pointer';
-        element.addEventListener('mouseenter', function() {
-            this.style.opacity = '0.8';
-            this.style.transform = 'scale(1.02)';
-            this.style.transition = 'all 0.3s ease';
-        });
-        
-        element.addEventListener('mouseleave', function() {
-            this.style.opacity = '1';
-            this.style.transform = 'scale(1)';
-        });
-    });
-    
-    // Close popup when close button is clicked
-    closeButton.addEventListener('click', function(e) {
-        e.stopPropagation();
-        hidePopup();
-    });
-    
-    // Close popup when clicking outside the popup content
-    popupContainer.addEventListener('click', function(e) {
-        if (e.target === popupContainer) {
-            hidePopup();
-        }
-    });
-    
-    // Close popup with Escape key
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape' && popupContainer.style.display === 'flex') {
-            hidePopup();
-        }
-    });
-    
-    // Initially hide the popup
-    hidePopup();
-    
-    // Wait for iframe to load and then scroll to the correct section
-    iframe.addEventListener('load', function() {
-        // Send message to iframe to navigate to specific section if needed
-        const currentSrc = iframe.src;
-        const hashIndex = currentSrc.indexOf('#');
-        if (hashIndex !== -1) {
-            const targetId = currentSrc.substring(hashIndex + 1);
-            
-            // Try to communicate with iframe to scroll to target
-            try {
-                iframe.contentWindow.postMessage({
-                    action: 'scrollToSection',
-                    targetId: targetId
-                }, '*');
-            } catch (error) {
-                console.log('Cross-origin iframe communication not available');
-            }
-        }
-    });
-    
-    // Listen for messages from the iframe
-    window.addEventListener('message', function(event) {
-        // Handle messages from iframe
-        if (event.data === 'closePopup') {
-            hidePopup();
-        }
-    });
-});
 
 // Additional CSS that should be added to your stylesheet
 const additionalCSS = `
@@ -473,10 +272,10 @@ const additionalCSS = `
         display: none;
     }
     
-    // .compilation-photos li,
-    // .compilation-photos-2 li,
-    // .compilation-photos-3 li,
-    // .compilation-photos-4 li,
+    .compilation-photos li,
+    .compilation-photos-2 li,
+    .compilation-photos-3 li,
+    .compilation-photos-4 li,
     .compilation-videos li,
     .compilation-videos-2 li,
     .compilation-videos-3 li,
@@ -485,10 +284,10 @@ const additionalCSS = `
         transition: all 0.3s ease;
     }
     
-    // .compilation-photos li:hover,
-    // .compilation-photos-2 li:hover,
-    // .compilation-photos-3 li:hover,
-    // .compilation-photos-4 li:hover,
+    .compilation-photos li:hover,
+    .compilation-photos-2 li:hover,
+    .compilation-photos-3 li:hover,
+    .compilation-photos-4 li:hover,
     .compilation-videos li:hover,
     .compilation-videos-2 li:hover,
     .compilation-videos-3 li:hover,
@@ -507,6 +306,6 @@ function injectCSS() {
 }
 
 // Inject CSS when DOM is loaded
-
 document.addEventListener('DOMContentLoaded', injectCSS);
+
 
