@@ -1,176 +1,81 @@
+
+
+//testing
+
 $(document).ready(function(){
-            var index = 0;
-            var slides = $('.slide');
-            var total_slides = slides.length;
+    var index = 0;
+    var slides = $('.slide');
+    var total_slides = slides.length;
 
-            // Show first slide
-            slides.eq(index).addClass('active');
+    // 🔹 1. Check if the URL has a hash (like #2025-performances)
+    var hash = window.location.hash;
+    if (hash) {
+        var target = $(hash);
+        if (target.length > 0) {
+            index = slides.index(target);
+        }
+    }
 
-            function showNextSlide(){
-                slides.eq(index).removeClass('active');
-                index = (index + 1) % total_slides;
-                slides.eq(index).addClass('active');
-            }
+    // 🔹 2. Show the correct slide (based on hash or first)
+    slides.eq(index).addClass('active').show();
 
-            function showPrevSlide(){
-                slides.eq(index).removeClass('active');
-                index = (index - 1 + total_slides) % total_slides; // Fixed negative modulo
-                slides.eq(index).addClass('active');
-            }
+    function showNextSlide(){
+        slides.eq(index).removeClass('active').hide();
+        index = (index + 1) % total_slides;
+        slides.eq(index).addClass('active').show();
+    }
 
-            // Navigation button events
-            $('.left').on('click', function(){
-                showPrevSlide();
-            });
+    function showPrevSlide(){
+        slides.eq(index).removeClass('active').hide();
+        index = (index - 1 + total_slides) % total_slides;
+        slides.eq(index).addClass('active').show();
+    }
 
-            $('.right').on('click', function(){
-                showNextSlide();
-            });
+    // 🔹 3. Navigation button events
+    $('.left').on('click', showPrevSlide);
+    $('.right').on('click', showNextSlide);
 
-            // Video click event for fullscreen
-            $('.video').click(function(event) {
-                event.preventDefault();
-                
-                var videoElement = $(this).find('video')[0];
-                var videoSrc = $(this).find('source').attr('src');
-                
-                if (videoSrc) {
-                    $('#fullVideo').attr('src', videoSrc);
-                    $('#fullVideoContainer').css('display', 'flex');
-                }
-            });
+    // 🔹 4. Video click event for fullscreen
+    $('.video').click(function(event) {
+        event.preventDefault();
+        
+        var videoElement = $(this).find('video')[0];
+        var videoSrc = $(this).find('source').attr('src');
+        
+        if (videoSrc) {
+            $('#fullVideo').attr('src', videoSrc);
+            $('#fullVideoContainer').css('display', 'flex');
+        }
+    });
 
-            // Close fullscreen when clicking outside video or on close button
-            $('#fullVideoContainer').click(function(event) {
-                if (event.target === this) {
-                    $(this).hide();
-                    $('#fullVideo')[0].pause(); // Pause video when closing
-                }
-            });
+    // 🔹 5. Close fullscreen when clicking outside or pressing ESC
+    $('#fullVideoContainer, #closeBtn').click(function(event) {
+        if (event.target === this || event.target.id === 'closeBtn') {
+            $('#fullVideoContainer').hide();
+            $('#fullVideo')[0].pause();
+        }
+    });
 
-            $('#closeBtn').click(function() {
-                $('#fullVideoContainer').hide();
-                $('#fullVideo')[0].pause(); // Pause video when closing
-            });
+    $(document).keyup(function(e) {
+        if (e.keyCode == 27) {
+            $('#fullVideoContainer').hide();
+            $('#fullVideo')[0].pause();
+        }
+    });
 
-            // ESC key to close fullscreen
-            $(document).keyup(function(e) {
-                if (e.keyCode == 27) { // ESC key
-                    $('#fullVideoContainer').hide();
-                    $('#fullVideo')[0].pause(); // Pause video when closing
-                }
-            });
+    // 🔹 6. Auto-play preview on hover (optional)
+    $('.video video').hover(
+        function() {
+            this.play();
+        },
+        function() {
+            this.pause();
+            this.currentTime = 0;
+        }
+    );
 
-            // Auto-play preview on hover (optional)
-            $('.video video').hover(
-                function() {
-                    this.play();
-                },
-                function() {
-                    this.pause();
-                    this.currentTime = 0;
-                }
-            );
-        });
+    // Debug info
+    console.log("Loaded hash:", hash, "→ Showing slide index:", index);
+});
 
 
-// $(document).ready(function(){
-//                 var index = 0;
-//                 var total_slides = $('.slide').length;
-//                 var slidesWrapper = $('.slides-wrapper');
-//                 var isAnimating = false;
-
-//                 function updateSlidePosition() {
-//                     var translateX = -index * 100;
-//                     slidesWrapper.css('transform', 'translateX(' + translateX + '%)');
-//                 }
-
-//                 function showNextSlide(){
-//                     if (isAnimating) return;
-//                     isAnimating = true;
-                    
-//                     index = (index + 1) % total_slides;
-//                     updateSlidePosition();
-                    
-//                     setTimeout(function() {
-//                         isAnimating = false;
-//                     }, 600);
-//                 }
-
-//                 function showPrevSlide(){
-//                     if (isAnimating) return;
-//                     isAnimating = true;
-                    
-//                     index = (index - 1 + total_slides) % total_slides;
-//                     slides.eq(index).addClass('active');
-                    
-//                     setTimeout(function() {
-//                         isAnimating = false;
-//                     }, 600);
-//                 }
-
-//                 // Navigation button events
-//                 $('.left').on('click', function(){
-//                     showPrevSlide();
-//                 });
-
-//                 $('.right').on('click', function(){
-//                     showNextSlide();
-//                 });
-
-//                 // Keyboard navigation
-//                 $(document).keydown(function(e) {
-//                     if (e.keyCode == 37) { // Left arrow
-//                         showPrevSlide();
-//                     } else if (e.keyCode == 39) { // Right arrow
-//                         showNextSlide();
-//                     }
-//                 });
-
-//                 // Video click event for fullscreen
-//                 $('.video').click(function(event) {
-//                     event.preventDefault();
-                    
-//                     var videoSrc = $(this).find('source').attr('src');
-                    
-//                     if (videoSrc) {
-//                         $('#fullVideo').attr('src', videoSrc);
-//                         $('#fullVideoContainer').css('display', 'flex');
-//                     }
-//                 });
-
-//                 // Close fullscreen when clicking outside video or on close button
-//                 $('#fullVideoContainer').click(function(event) {
-//                     if (event.target === this) {
-//                         $(this).hide();
-//                         $('#fullVideo')[0].pause();
-//                         $('#fullVideo')[0].currentTime = 0;
-//                     }
-//                 });
-
-//                 $('#closeBtn').click(function() {
-//                     $('#fullVideoContainer').hide();
-//                     $('#fullVideo')[0].pause();
-//                     $('#fullVideo')[0].currentTime = 0;
-//                 });
-
-//                 // ESC key to close fullscreen
-//                 $(document).keyup(function(e) {
-//                     if (e.keyCode == 27) { // ESC key
-//                         $('#fullVideoContainer').hide();
-//                         $('#fullVideo')[0].pause();
-//                         $('#fullVideo')[0].currentTime = 0;
-//                     }
-//                 });
-
-//                 // Auto-play preview on hover (optional)
-//                 $('.video video').hover(
-//                     function() {
-//                         this.play();
-//                     },
-//                     function() {
-//                         this.pause();
-//                         this.currentTime = 0;
-//                     }
-//                 );
-//             });
