@@ -506,6 +506,13 @@ body {
       justify-content: center;
       gap: 1.5rem;
       padding: 15px 20px;
+      height: 100px;
+   }
+
+   .buttons > .collection-dropdown{
+
+      padding-top: 109px;
+      padding-left: 30px;
    }
    
    .buttons li:first-child {
@@ -602,7 +609,6 @@ body {
       margin-top: 10px;
    }
 }
-
 /* Small Mobile Styles */
 @media (max-width: 480px) {
    #history-body p {
